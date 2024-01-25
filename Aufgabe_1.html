@@ -13,9 +13,8 @@
   </head>
 
   <body>
-    <div class="container main">
-      <h1>Math</h1>
-      <div class="card">
+    <div class="container main mt-5">
+      <div class="card mx-auto" style="min-width: 800px; max-width: 800px">
         <div class="card-header">
           <div class="d-flex flex-row justify-content-center">
             <div class="flex-grow-1 text-center draw-title">Test</div>
@@ -24,7 +23,7 @@
         </div>
         <div class="card-body">
           <div
-            class="radio-top d-flex flex-row justify-content-around border border-dark p-2"
+            class="radio-top d-flex flex-row justify-content-around border rounded-2 p-2"
           >
             <div class="form-check">
               <input
@@ -57,7 +56,7 @@
           </div>
           <div class="math-center">
             <div class="row">
-              <div class="col p-2">
+              <div class="col p-2" style="min-height: 250px">
                 <div class="draw-image">
                   <img class="img-fluid draw-img" src="" />
                   <div class="draw-img-calc">
@@ -68,20 +67,28 @@
                   <p></p>
                 </div>
               </div>
-              <div class="col p-2">
+              <div class="col p-2" style="min-width: 300px">
                 <!-- Rechteck -->
                 <div class="rectangle-col draw-col">
                   <!-- <div class="h4 text-center">Rechteck</div> -->
                   <div class="mb-3 row">
                     <label class="col-form-label col-sm-3">A</label>
                     <div class="col-sm-9">
-                      <input class="form-control rectangle-col-a" type="text" />
+                      <input
+                        class="form-control rectangle-col-a"
+                        type="text"
+                        onblur="checkvalidInput(this)"
+                      />
                     </div>
                   </div>
                   <div class="mb-3 row">
                     <label class="col-form-label col-sm-3">B</label>
                     <div class="col-sm-9">
-                      <input class="form-control rectangle-col-b" type="text" />
+                      <input
+                        class="form-control rectangle-col-b"
+                        type="text"
+                        onblur="checkvalidInput(this)"
+                      />
                     </div>
                   </div>
                   <div class="mb-3 row">
@@ -101,13 +108,21 @@
                   <div class="mb-3 row">
                     <label class="col-form-label col-sm-3">A</label>
                     <div class="col-sm-9">
-                      <input class="form-control triangle-col-a" type="text" />
+                      <input
+                        class="form-control triangle-col-a"
+                        type="text"
+                        onblur="checkvalidInput(this)"
+                      />
                     </div>
                   </div>
                   <div class="mb-3 row">
                     <label class="col-form-label col-sm-3">B</label>
                     <div class="col-sm-9">
-                      <input class="form-control triangle-col-b" type="text" />
+                      <input
+                        class="form-control triangle-col-b"
+                        type="text"
+                        onblur="checkvalidInput(this)"
+                      />
                     </div>
                   </div>
                   <div class="mb-3 row">
@@ -127,7 +142,11 @@
                   <div class="mb-3 row">
                     <label class="col-form-label col-sm-3">r</label>
                     <div class="col-sm-9">
-                      <input class="form-control circle-col-r" type="text" />
+                      <input
+                        class="form-control circle-col-r"
+                        type="text"
+                        onblur="checkvalidInput(this)"
+                      />
                     </div>
                   </div>
                   <!-- <div class="mb-3 row">
@@ -150,7 +169,7 @@
               </div>
               <div class="col p-2">
                 <div
-                  class="radio-calculation d-flex flex-column justify-content-around border border-dark mx-1 p-3"
+                  class="radio-calculation d-flex flex-column justify-content-around border rounded-2 mx-1 p-3"
                 >
                   <div class="form-check">
                     <input
@@ -175,7 +194,7 @@
               </div>
             </div>
             <div class="button-row input-group justify-content-end">
-              <button class="btn btn-outline-secondary" onclick="calc()">
+              <button class="btn btn-outline-secondary calculationButton" onclick="calc()">
                 Berechnen
               </button>
               <button class="btn btn-outline-secondary" onclick="closeAndEnd()">
@@ -197,12 +216,12 @@
         const CIR = "circle";
         const SCOPE = "scope";
         const SUR = "surface";
-        const RECT_SCOPE_TEXT =  "Flächeninhalt = a * b";
-        const RECT_SUR_TEXT =  "Umfang = 2* (a + b)";
-        const TRI_SCOPE_TEXT =  "Flächeninhalt = a * b / 2";
-        const TRI_SUR_TEXT =  "Umfang =  √(a² + b²) + a + b";        
-        const CIR_SCOPE_TEXT =  "Flächeninhalt = π/4 * 2r²";
-        const CIR_SUR_TEXT =  "Umfang = 2 * r * π";
+        const RECT_SCOPE_TEXT = "Flächeninhalt = a * b";
+        const RECT_SUR_TEXT = "Umfang = 2* (a + b)";
+        const TRI_SCOPE_TEXT = "Flächeninhalt = a * b / 2";
+        const TRI_SUR_TEXT = "Umfang =  √(a² + b²) + a + b";
+        const CIR_SCOPE_TEXT = "Flächeninhalt = π/4 * 2r²";
+        const CIR_SUR_TEXT = "Umfang = 2 * r * π";
         setUpCalculation("rectangle");
 
         // console.log helper
@@ -222,6 +241,40 @@
           if (imgDrawText != null) {
             imgDrawText.innerHTML = imageText;
           }
+        }
+        function checkvalidInput(element) {
+          log("check input for valid number");
+          log(isNaN(element.value));
+          if (!isPositiveInteger2(element.value)) {
+            element.classList.add("is-invalid");
+          } else {
+            element.classList.remove("is-invalid");
+          }
+          toggleCalculationButtonOnValidation();
+        }
+        function removeValidation() {
+          const invalid = document.querySelectorAll('.is-invalid');
+          if(invalid != null && invalid.length > 0) {
+            invalid.forEach((elem) => elem.classList.remove("is-invalid"));
+          }
+          toggleCalculationButtonOnValidation();
+        }
+        function toggleCalculationButtonOnValidation() {
+          const invalid = document.querySelectorAll('.is-invalid');
+          const btn = document.querySelector('.calculationButton');
+          if(invalid != null && invalid.length > 0) {
+            log(invalid);
+            btn.setAttribute("disabled",true);
+          } else {
+            btn.removeAttribute("disabled");
+          }
+        }
+        function isPositiveInteger2(v) {
+          var i;
+          return v && (i = parseInt(v)) && i > 0 && (i === v || ''+i === v);
+        }
+        function isPositiveInteger(n) {
+          return 0 === n % (!isNaN(parseFloat(n)) && 0 <= ~~n) && Number(n) > 0;
         }
         /**
          * on the calculation radio is toggled
@@ -298,6 +351,7 @@
         function setUpCalculation(event_id) {
           hideDrawCols();
           selectRadioInput(document.querySelector(".radio-calculation #scope"));
+          removeValidation();
           let drawCol = null;
           let rootImg = null;
           let imgDrawText = null;
@@ -310,7 +364,7 @@
               );
               drawCol.style.display = "block";
               rootImg = event_id + ".png";
-              imgDrawText =RECT_SCOPE_TEXT;
+              imgDrawText = RECT_SCOPE_TEXT;
               resetInputNumberFields(
                 document.querySelectorAll(".rectangle-col input")
               );
