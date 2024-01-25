@@ -297,7 +297,10 @@
               return;
           }
           setImageText(drawText);
-          calc();
+          const invalid = document.querySelectorAll('.is-invalid');
+          if(invalid != null && invalid.length == 0) {
+            calc();
+          }
         }
         // functions which closes and cleans
         function closeAndEnd() {
