@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aufgabe 1</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+  </head>
+
+  <body>
+    <div class="container main">
+      <h1>Math</h1>
+      <div class="card">
+        <div class="card-header">
+          <div class="d-flex flex-row justify-content-center">
+            <div class="flex-grow-1 text-center draw-title">Test</div>
+            <span class="btn-close" onclick="closeAndEnd()"></span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div
+            class="radio-top d-flex flex-row justify-content-around border border-dark p-2"
+          >
+            <div class="form-check">
+              <input
+                type="radio"
+                name="option"
+                id="rectangle"
+                oninput="toggleDrawing(this)"
+              />
+              <label class="" for="option">Rechteck</label>
+            </div>
+            <div class="form-check">
+              <input
+                type="radio"
+                name="option"
+                id="triangle"
+                oninput="toggleDrawing(this)"
+              />
+              <label class="" for="option">Dreieck</label>
+            </div>
+            <div class="form-check">
+              <input
+                type="radio"
+                name="option"
+                id="circle"
+                oninput="toggleDrawing(this)"
+              />
+              <label class="" for="option">Kreis</label>
+            </div>
+          </div>
+          <div class="math-center">
+            <div class="row">
+              <div class="col p-2">
+                <div class="draw-image">
+                  <img class="img-fluid draw-img" src="" />
+                  <div class="draw-img-calc">
+                    <p></p>
+                  </div>
+                </div>
+                <div class="draw-image-info">
+                  <p></p>
+                </div>
+              </div>
+              <div class="col p-2">
+                <!-- Rechteck -->
+                <div class="rectangle-col draw-col">
+                  <div class="h4 text-center">Rechteck</div>
+                  <div class="mb-3 row">
+                    <label class="col-form-label col-sm-3">A</label>
+                    <div class="col-sm-9">
+                      <input class="form-control rectangle-col-a" type="text" />
+                    </div>
+                  </div>
+                  <div class="mb-3 row">
+                    <label class="col-form-label col-sm-3">B</label>
+                    <div class="col-sm-9">
+                      <input class="form-control rectangle-col-b" type="text" />
+                    </div>
+                  </div>
+                  <div class="mb-3 row">
+                    <label class="col-form-label col-sm-3">Fläche</label>
+                    <div class="col-sm-9">
+                      <input
+                        class="form-control rectangle-col-result"
+                        readonly
+                        type="text"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <!-- Dreieck -->
+                <div class="triangle-col draw-col">
+                  <div class="h4 text-center">Dreieck</div>
+                  <div class="mb-3 row">
+                    <label class="col-form-label col-sm-3">A</label>
+                    <div class="col-sm-9">
+                      <input class="form-control triangle-col-a" type="text" />
+                    </div>
+                  </div>
+                  <div class="mb-3 row">
+                    <label class="col-form-label col-sm-3">B</label>
+                    <div class="col-sm-9">
+                      <input class="form-control triangle-col-b" type="text" />
+                    </div>
+                  </div>
+                  <div class="mb-3 row">
+                    <label class="col-form-label col-sm-3">Fläche</label>
+                    <div class="col-sm-9">
+                      <input
+                        class="form-control triangle-col-result"
+                        type="text"
+                        readonly
+                      />
+                    </div>
+                  </div>
+                </div>
+                <!-- Kreis -->
+                <div class="circle-col draw-col">
+                  <div class="h4 text-center">Kreis</div>
+                  <div class="mb-3 row">
+                    <label class="col-form-label col-sm-3">r</label>
+                    <div class="col-sm-9">
+                      <input class="form-control circle-col-r" type="text" />
+                    </div>
+                  </div>
+                  <!-- <div class="mb-3 row">
+                    <label class="col-form-label col-sm-3">B</label>
+                    <div class="col-sm-9">
+                      <input class="form-control" type="text" />
+                    </div>
+                  </div> -->
+                  <div class="mb-3 row">
+                    <label class="col-form-label col-sm-3">Fläche</label>
+                    <div class="col-sm-9">
+                      <input
+                        class="form-control circle-col-result"
+                        type="text"
+                        readonly
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col p-2">
+                <div class="calculationToggle">
+                  <div class="form-check">
+                    <input
+                      type="radio"
+                      name="calculation"
+                      id="scope"
+                      oninput="toggleCalculation(this)"
+                    />
+                    <label class="" for="scope">Flächeninhalt</label>
+                  </div>
+                  <div class="form-check">
+                    <input
+                      type="radio"
+                      name="calculation"
+                      id="surface"
+                      oninput="toggleCalculation(this)"
+                    />
+                    <label class="" for="surface">Umfang</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="button-row input-group justify-content-end">
+              <button class="btn btn-outline-secondary" onclick="calc()">
+                Berechnen
+              </button>
+              <button class="btn btn-outline-secondary" onclick="closeAndEnd()">
+                Beenden
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"
+      ></script>
+      <script type="text/javascript">
+        console.log("onload");
+        const RECT = "rectangle";
+        const TRI = "triangle";
+        const CIR = "circle";
+        setUpCalculation(null);
+
+        function log(logMessage = "") {
+          console.log(logMessage);
+        }
+        // set title
+        function setTitle(title = null, imageText = null) {
+          let drawTitle = document.querySelector(".draw-title");
+          if (drawTitle != null) {
+            drawTitle.innerHTML = title || "Keine Auswahl";
+          }
+          if (imageText == null) {
+            setInformation("Keine Figur ausgewählt");
+          } else {
+            setInformation();
+            let p = document.querySelector(".draw-img-calc p");
+            if (p != null) {
+              imgDrawText = imageText || "Keine Figur ausgewählt";
+              log("image draw text: " + imgDrawText);
+              p.innerText = imgDrawText;
+            }
+          }
+        }
+        // setting information text under the drawing image
+        function setInformation(info = "") {
+          log("setInformation method");
+          let p = document.querySelector(".draw-image-info p");
+          if (p != null) {
+            p.innerText = info;
+          }
+        }
+        // functions which closes and cleans
+        function closeAndEnd() {
+          clearInputs();
+          hideDrawCols();
+          toggleDrawImage();
+          deselectRadioInputs();
+          setTitle();
+        }
+
+        // deselecting every
+        function deselectRadioInputs() {
+          const radios = document.querySelectorAll("input[type=radio]:checked");
+          if (radios != null) {
+            radios.forEach((radio) => (radio.checked = false));
+          }
+        }
+        // toggle the drawing on event
+        function toggleDrawing(event) {
+          if (event != null) {
+            clearInputs();
+            setUpCalculation(event.id);
+          }
+        }
+        // hide the image
+        function toggleDrawImage(display = "none") {
+          let img = document.querySelector(".draw-image");
+          if (img != null) {
+            img.style.display = display;
+          }
+        }
+        // hide the draw column
+        function hideDrawCols() {
+          let drawCols = document.querySelectorAll(".draw-col");
+          if (drawCols != null) {
+            drawCols.forEach((col) => (col.style.display = "none"));
+          }
+        }
+        function setUpCalculation(event_id) {
+          hideDrawCols();
+          let drawCol = null;
+          let rootImg = null;
+          let imgDrawText = null;
+          let title = null;
+          switch (event_id) {
+            case RECT:
+              title = "Rechteck";
+              drawCol = document.querySelector(
+                ".draw-col." + event_id + "-col"
+              );
+              drawCol.style.display = "block";
+              rootImg = event_id + ".png";
+              imgDrawText = "Flächeninhalt = a * b";
+              break;
+            case TRI:
+              title = "Dreieck";
+              drawCol = document.querySelector(
+                ".draw-col." + event_id + "-col"
+              );
+              drawCol.style.display = "block";
+              rootImg = event_id + ".png";
+              imgDrawText = "Flächeninhalt = a * b / 2";
+              break;
+            case CIR:
+              title = "Kreis";
+              drawCol = document.querySelector(
+                ".draw-col." + event_id + "-col"
+              );
+              drawCol.style.display = "block";
+              rootImg = event_id + ".png";
+              imgDrawText = "Flächeninhalt = PI/4 * 2r²";
+              break;
+          }
+
+          setTitle(title, imgDrawText);
+
+          if (rootImg) {
+            drawImg = document.querySelector(".draw-img");
+            if (drawImg != null) {
+              drawImg.src = rootImg;
+              toggleDrawImage("block");
+            }
+          }
+        }
+        ///
+        /// Calculate with the given option
+        ///
+        function calc() {
+          console.log("Calculation");
+          // get current selection
+          let selectedOption = document.querySelector(".radio-top :checked");
+          if (selectedOption == null) {
+            console.log("nothing selected nothing to calculate");
+            return;
+          }
+          switch (selectedOption.id) {
+            case RECT:
+              calculateRectangle();
+              break;
+            case TRI:
+              calculateTriangle();
+              break;
+            case CIR:
+              calculateCircle();
+              break;
+            default:
+              return;
+          }
+        }
+
+        function calculateRectangle(option) {
+          console.log("Calculation Reactangle");
+          let a = document.querySelector(
+            ".rectangle-col input.rectangle-col-a"
+          ).value;
+          let b = document.querySelector(
+            ".rectangle-col input.rectangle-col-b"
+          ).value;
+          let result = a * b;
+          console.log("result=" + result);
+          document.querySelector(
+            ".rectangle-col input.rectangle-col-result"
+          ).value = result;
+        }
+
+        function calculateTriangle(option) {
+          console.log("Calculation Triangle");
+          let a = document.querySelector(
+            ".triangle-col input.triangle-col-a"
+          ).value;
+          let b = document.querySelector(
+            ".triangle-col input.triangle-col-b"
+          ).value;
+          let result = (a * b) / 2;
+          console.log("result=" + result);
+          document.querySelector(
+            ".triangle-col input.triangle-col-result"
+          ).value = result;
+        }
+
+        function calculateCircle(option) {
+          console.log("Calculation Circle");
+          let r = document.querySelector(
+            ".circle-col input.circle-col-r"
+          ).value;
+          let result = Math.PI * Math.pow(r, 2);
+          console.log("result=" + result);
+          document.querySelector(".circle-col input.circle-col-result").value =
+            result;
+        }
+
+        function clearInputs() {
+          console.log("Clear everything up");
+          let recTangles = document.querySelectorAll(".rectangle-col input");
+          recTangles.forEach((rec) => {
+            rec.value = null;
+          });
+          let recTriangles = document.querySelectorAll(".triangle-col input");
+          recTriangles.forEach((tri) => {
+            tri.value = null;
+          });
+          let circle = document.querySelectorAll(".circle-col input");
+          circle.forEach((cir) => {
+            cir.value = null;
+          });
+        }
+      </script>
+    </div>
+  </body>
+</html>
