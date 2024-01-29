@@ -67,7 +67,7 @@
                   <p></p>
                 </div>
               </div>
-              <div class="col p-2" style="min-width: 300px">
+              <div class="col p-2" style="min-width: 330px">
                 <!-- Rechteck -->
                 <div class="rectangle-col draw-col">
                   <!-- <div class="h4 text-center">Rechteck</div> -->
@@ -246,7 +246,7 @@
         }
         function checkvalidInput(element) {
           log("check input for valid number");
-          log(isNaN(element.value));
+          log(parseFloat(element.value));
           if (!isPositiveInteger2(element.value)) {
             element.classList.add("is-invalid");
           } else {
@@ -265,7 +265,6 @@
           const invalid = document.querySelectorAll('.is-invalid');
           const btn = document.querySelector('.calculationButton');
           if(invalid != null && invalid.length > 0) {
-            log(invalid);
             btn.setAttribute("disabled",true);
           } else {
             btn.removeAttribute("disabled");
@@ -273,10 +272,12 @@
         }
         function isPositiveInteger2(v) {
           var i;
-          return v && (i = parseFloat(v)) && i > 0 && (i === v || ''+i === v);
+          let va =   Number.isInteger(v) || (Number(v) === 0);
+          log(v && (i = parseFloat(v)) && i > 0 && (i===v || ''+i===v));
+          return (v && (i = parseFloat(v)) && i > 0 && (i===v || ''+i===v)) || (v && (i = parseFloat(v)) === 0 && !v.startsWith('.'));
         }
         function isPositiveInteger(n) {
-          return 0 === n % (!isNaN(parseFloat(n)) && 0 <= ~~n) && Number(n) > 0;
+          return 0 === n % (!isNaN(parseFloat(n)) && 0 <= ~~n) && Number(n) >= 0;
         }
         /**
          * on the calculation radio is toggled
@@ -284,18 +285,22 @@
         function calculationSelected(event_id) {
           log("calculation selected for event id " + event_id.id);
           const selectedForm = document.querySelector(".radio-top :checked");
-          const resultLabel = document.querySelector(".result-label");
-          resultLabel.innerText = event_id.id == SCOPE ? SCOPE_TEXT : SUR_TEXT;
           let drawText = "";
           switch (selectedForm.id) {
             case RECT:
               drawText = event_id.id == SCOPE ? RECT_SCOPE_TEXT : RECT_SUR_TEXT;
+              const resultLabelRect = document.querySelector(".rectangle-col .result-label");
+              resultLabelRect.innerText = event_id.id == SCOPE ? SCOPE_LABEL : SUR_LABEL;
               break;
             case TRI:
               drawText = event_id.id == SCOPE ? TRI_SCOPE_TEXT : TRI_SUR_TEXT;
+              const resultLabelTri = document.querySelector(".triangle-col .result-label");
+              resultLabelTri.innerText = event_id.id == SCOPE ? SCOPE_LABEL : SUR_LABEL;
               break;
             case CIR:
               drawText = event_id.id == SCOPE ? CIR_SCOPE_TEXT : CIR_SUR_TEXT;
+              const resultLabelCir = document.querySelector(".circle-col .result-label");
+              resultLabelCir.innerText = event_id.id == SCOPE ? SCOPE_LABEL : SUR_LABEL;
               break;
             default:
               return;
@@ -315,6 +320,8 @@
         function defaultRadioInputs() {
           selectRadioInput(document.querySelector(".radio-top #rectangle"));
           selectRadioInput(document.querySelector(".radio-calculation #scope"));
+          const resultLabel = document.querySelectorAll(".result-label");
+          resultLabel.forEach((label) => label.innerText = SCOPE_LABEL);
         }
         function selectRadioInput(radio) {
           if (radio != null) {
