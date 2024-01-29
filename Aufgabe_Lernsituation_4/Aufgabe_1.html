@@ -92,7 +92,7 @@
                     </div>
                   </div>
                   <div class="mb-3 row">
-                    <label class="col-form-label col-sm-3">Fläche</label>
+                    <label class="col-form-label col-sm-3 result-label">Fläche</label>
                     <div class="col-sm-9">
                       <input
                         class="form-control rectangle-col-result"
@@ -126,7 +126,7 @@
                     </div>
                   </div>
                   <div class="mb-3 row">
-                    <label class="col-form-label col-sm-3">Fläche</label>
+                    <label class="col-form-label col-sm-3 result-label">Fläche</label>
                     <div class="col-sm-9">
                       <input
                         class="form-control triangle-col-result"
@@ -156,7 +156,7 @@
                     </div>
                   </div> -->
                   <div class="mb-3 row">
-                    <label class="col-form-label col-sm-3">Fläche</label>
+                    <label class="col-form-label col-sm-3 result-label">Fläche</label>
                     <div class="col-sm-9">
                       <input
                         class="form-control circle-col-result"
@@ -216,6 +216,8 @@
         const CIR = "circle";
         const SCOPE = "scope";
         const SUR = "surface";
+        const SCOPE_LABEL = "Fläche";
+        const SUR_LABEL = "Umfang";
         const RECT_SCOPE_TEXT = "Flächeninhalt = a * b";
         const RECT_SUR_TEXT = "Umfang = 2* (a + b)";
         const TRI_SCOPE_TEXT = "Flächeninhalt = a * b / 2";
@@ -271,7 +273,7 @@
         }
         function isPositiveInteger2(v) {
           var i;
-          return v && (i = parseInt(v)) && i > 0 && (i === v || ''+i === v);
+          return v && (i = parseFloat(v)) && i > 0 && (i === v || ''+i === v);
         }
         function isPositiveInteger(n) {
           return 0 === n % (!isNaN(parseFloat(n)) && 0 <= ~~n) && Number(n) > 0;
@@ -282,6 +284,8 @@
         function calculationSelected(event_id) {
           log("calculation selected for event id " + event_id.id);
           const selectedForm = document.querySelector(".radio-top :checked");
+          const resultLabel = document.querySelector(".result-label");
+          resultLabel.innerText = event_id.id == SCOPE ? SCOPE_TEXT : SUR_TEXT;
           let drawText = "";
           switch (selectedForm.id) {
             case RECT:
