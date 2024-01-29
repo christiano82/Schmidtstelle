@@ -6,25 +6,15 @@ from PyQt5.QtWidgets import (
     QCheckBox,
     QComboBox,
     QDateEdit,
-    QDateTimeEdit,
-    QDial,
-    QDoubleSpinBox,
-    QFontComboBox,
     QLabel,
-    QLCDNumber,
     QLineEdit,
     QMainWindow,
-    QProgressBar,
     QPushButton,
-    QRadioButton,
-    QSlider,
-    QSpinBox,
-    QTimeEdit,
     QVBoxLayout,
     QWidget,
     QHBoxLayout,
+    QDialog,
     QDialogButtonBox
-
 )
 from PyQt5.QtGui import QPalette, QColor
 class Color(QWidget):
@@ -36,10 +26,25 @@ class Color(QWidget):
         palette = self.palette()
         palette.setColor(QPalette.ColorRole.Window, QColor(color))
         self.setPalette(palette)
+        
+class DialogWindow(QDialog):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Dialog Window")
 
+        button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        button_box.accepted.connect(self.accept)
+        button_box.rejected.connect(self.reject)
+        
+        layout = QVBoxLayout()
+        layout.addWidget(QLabel("This is a dialog window"))
+        layout.addWidget(button_box)
+        self.setLayout(layout)
+        
 class RowWidget(QWidget):
-    def __init__(self, id, parent=None):
+    def __init__(self, id,foo_manager, parent=None):
         super().__init__(parent)
+        self.manager = foo_manager
         self.id = id
         self.checkbox_use = QCheckBox()
         self.checkbox_use.billrow = 1
@@ -49,6 +54,7 @@ class RowWidget(QWidget):
         self.date_edit_von = QDateEdit(calendarPopup=True)
         self.date_edit_bis = QDateEdit(calendarPopup=True)
         self.line_edit_preis = QLineEdit()
+        self.line_edit_preis.setText(str(self.id))
         
         layout = QHBoxLayout()
         layout.addWidget(self.checkbox_use)
@@ -63,12 +69,14 @@ class RowWidget(QWidget):
         self.deleteLater()
     def handle_checkbox(self, state):
         if state == Qt.CheckState.Checked:
-            manager.add_row()
+            self.manager.add_row()
+        else:
+            self.manager.remove_row(self.id)
             
 class RowManager(QWidget):
     def __init__(self):
         super().__init__()
-        self.rows = {}
+        self.rows = []
         self.rows_layout = QVBoxLayout()
         if len(self.rows) == 0: 
             self.add_row()
@@ -76,19 +84,18 @@ class RowManager(QWidget):
         self.setLayout(self.rows_layout)
     def add_row(self):
         id = len(self.rows)
-        row = RowWidget(id)
-        self.rows[id] = row
+        row = RowWidget(id,self)
+        self.rows.append(row)
         self.rows_layout.addWidget(row)
         print("adding a row")    
+    def remove_row(self, id):
+        if len(self.rows) > 1:
+            row = self.rows.pop()
+            row.setParent(None)
+            row.deleteLater()
 
 class MainWindow(QMainWindow):
 
-    # def checkboxClicked(self,):
-    #     check1 = self.sender()
-    #     if check1.isChecked() == True:        
-    #         print("checkbox clicked and checked " + str( check1.billrow) + " row ")
-    #     else: 
-    #         print("uncheckbox checkbox on row " + str(check1.billrow) + " ")
     def close(self):
         sys.exit()
     def setButtons(self,layout):
@@ -96,6 +103,7 @@ class MainWindow(QMainWindow):
         buttonGroup.addStretch()
         buttonShowBill = QPushButton('Rechnung Anzeigen', self)
         buttonShowBill.setFixedWidth(120)
+        buttonShowBill.clicked.connect(self.show_dialog)
         buttonClose = QPushButton('Beenden',self)
         buttonClose.setFixedWidth(70)
         buttonClose.clicked.connect(self.close)
@@ -118,7 +126,12 @@ class MainWindow(QMainWindow):
         # Set the central widget of the Window. Widget will expand
         # to take up all the space in the window by default.
         self.setCentralWidget(widget)
-
+    def show_dialog(self):
+        dialog = DialogWindow()
+        if dialog.exec_() == QDialog.Accepted:
+            print("Dialog accepted")
+        else:
+            print("Dialog rejected")
 
 app = QApplication(sys.argv)
 manager = RowManager()
