@@ -115,18 +115,19 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         self.setWindowTitle("Widgets App")
-        rowManager = manager
+        self.rowManager = manager
         layout = QVBoxLayout()
-        layout.addWidget(rowManager)
+        layout.addWidget(self.rowManager)
         layout.addStretch()
         self.setButtons(layout)
         widget = QWidget() # Color('green')
         widget.setLayout(layout)
-        self.setMinimumSize(800,200)
+        self.setMinimumSize(800,300)
         # Set the central widget of the Window. Widget will expand
         # to take up all the space in the window by default.
         self.setCentralWidget(widget)
     def show_dialog(self):
+        print("getting the row out of the manager shit " + str(len(self.rowManager.rows)))
         dialog = DialogWindow()
         if dialog.exec_() == QDialog.Accepted:
             print("Dialog accepted")
