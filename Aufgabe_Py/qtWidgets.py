@@ -1,6 +1,6 @@
 import sys
 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import (Qt,QDateTime, QLocale)
 from PyQt5.QtWidgets import (
     QApplication,
     QCheckBox,
@@ -14,9 +14,10 @@ from PyQt5.QtWidgets import (
     QWidget,
     QHBoxLayout,
     QDialog,
-    QDialogButtonBox
+    QDialogButtonBox,
+    QTextBrowser,
 )
-from PyQt5.QtGui import QPalette, QColor
+from PyQt5.QtGui import QPalette, QColor, QDoubleValidator
 class Color(QWidget):
 
     def __init__(self, color):
@@ -26,20 +27,47 @@ class Color(QWidget):
         palette = self.palette()
         palette.setColor(QPalette.ColorRole.Window, QColor(color))
         self.setPalette(palette)
+
+class NumberOnlyLineEdit(QLineEdit):
+ def __init__(self, parent=None):
+        super().__init__(parent)
         
+        validator = QDoubleValidator()
+        validator.setDecimals(2)
+        validator.setLocale(QLocale(QLocale.German))
+        self.setValidator(validator)
+
+
 class DialogWindow(QDialog):
-    def __init__(self):
+    def __init__(self, manager):
         super().__init__()
-        self.setWindowTitle("Dialog Window")
+        # self.setWindowTitle("Dialog Window")
+        self.manager = manager
+        self.setWindowTitle("Bill")
+        self.setGeometry(100, 100, 500, 400)
+
+        self.text_browser = QTextBrowser()
+        self.text_browser.setHtml(self.generate_bill())
+
+        layout = QVBoxLayout()
+        layout.addWidget(self.text_browser)
 
         button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
         button_box.accepted.connect(self.accept)
         button_box.rejected.connect(self.reject)
         
-        layout = QVBoxLayout()
-        layout.addWidget(QLabel("This is a dialog window"))
         layout.addWidget(button_box)
         self.setLayout(layout)
+    def generate_bill(self):
+        bill_html = f"<h1>Bill for Jörg</h1>"
+        bill_html += "<ul>"
+
+        for row in manager.rows:
+            bill_html += f"<li>{row.id}: 3$</li>"
+
+        bill_html += "</ul>"
+        bill_html += f"<h2>Total Cost: 50$</h2>"
+        return bill_html
         
 class RowWidget(QWidget):
     def __init__(self, id,foo_manager, parent=None):
@@ -52,8 +80,10 @@ class RowWidget(QWidget):
         self.combobox_art = QComboBox()
         self.combobox_art.addItems(["Foo","Baar"])
         self.date_edit_von = QDateEdit(calendarPopup=True)
+        self.date_edit_von.setDateTime(QDateTime.currentDateTime())
         self.date_edit_bis = QDateEdit(calendarPopup=True)
-        self.line_edit_preis = QLineEdit()
+        self.date_edit_bis.setDateTime(QDateTime.currentDateTime())
+        self.line_edit_preis = NumberOnlyLineEdit()
         self.line_edit_preis.setText(str(self.id))
         
         layout = QHBoxLayout()
@@ -63,19 +93,19 @@ class RowWidget(QWidget):
         layout.addWidget(self.date_edit_bis)
         layout.addWidget(self.line_edit_preis)
         self.setLayout(layout)
-    
-    def remove_self(self):
-        self.setParent(None)
-        self.deleteLater()
+
     def handle_checkbox(self, state):
+        # print("handle_checkbox")
         if state == Qt.CheckState.Checked:
             self.manager.add_row()
         else:
+            # print("remove row " + str(self.id))
             self.manager.remove_row(self.id)
             
 class RowManager(QWidget):
     def __init__(self):
         super().__init__()
+        self.id = 0
         self.rows = []
         self.rows_layout = QVBoxLayout()
         if len(self.rows) == 0: 
@@ -83,16 +113,18 @@ class RowManager(QWidget):
             
         self.setLayout(self.rows_layout)
     def add_row(self):
-        id = len(self.rows)
+        id = self.id
         row = RowWidget(id,self)
+        self.id += 1
         self.rows.append(row)
         self.rows_layout.addWidget(row)
-        print("adding a row")    
     def remove_row(self, id):
-        if len(self.rows) > 1:
-            row = self.rows.pop()
-            row.setParent(None)
-            row.deleteLater()
+        for row in self.rows:
+            if row.id == id:
+                removedRow = row
+                self.rows.remove(removedRow)
+                removedRow.setParent(None)
+                removedRow.deleteLater()
 
 class MainWindow(QMainWindow):
 
@@ -128,7 +160,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(widget)
     def show_dialog(self):
         print("getting the row out of the manager shit " + str(len(self.rowManager.rows)))
-        dialog = DialogWindow()
+        dialog = DialogWindow(manager)
         if dialog.exec_() == QDialog.Accepted:
             print("Dialog accepted")
         else:
