@@ -143,7 +143,7 @@ class RowWidget(QWidget):
         
         self.date_edit_bis = QDateEdit(calendarPopup=True)
         self.date_edit_bis.setFixedWidth(150)
-        self.date_edit_bis.setDateTime(QDateTime.currentDateTime())
+        self.date_edit_bis.setDateTime(QDateTime.currentDateTime().addDays(1))
         self.date_edit_bis.dateTimeChanged.connect(self.handle_date_time_changed_bis)
         
         self.line_edit_preis = NumberOnlyLineEdit()
@@ -170,12 +170,14 @@ class RowWidget(QWidget):
         # if vom > bis set vom to bis
         if self.date_edit_von.dateTime() > self.date_edit_bis.dateTime():
             self.date_edit_von.setDateTime(self.date_edit_bis.dateTime())
+            self.date_edit_von.setDateTime(self.date_edit_von.dateTime().addDays(-1))
             
     def handle_date_time_changed_von(self):
         # if bis > vom set bis to vom
         if self.date_edit_bis.dateTime() < self.date_edit_von.dateTime():
             self.date_edit_bis.setDateTime(self.date_edit_von.dateTime())
-                
+            self.date_edit_bis.setDateTime(self.date_edit_bis.dateTime().addDays(1))    
+            
     def handle_checkbox(self, state):
         # print("handle_checkbox")
         if state == Qt.CheckState.Checked:
