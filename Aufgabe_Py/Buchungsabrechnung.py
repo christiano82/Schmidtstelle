@@ -134,7 +134,7 @@ class RowWidget(QWidget):
         self.checkbox_use.stateChanged.connect(self.handle_checkbox)
         self.combobox_art = QComboBox()
         self.combobox_art.setFixedWidth(140)
-        self.combobox_art.addItems(["Halbpension","Vollpension"])
+        self.combobox_art.addItems(["Halbpension","Vollpension","Spezialangebot"])
         
         self.date_edit_von = QDateEdit(calendarPopup=True)
         self.date_edit_von.setFixedWidth(150)
